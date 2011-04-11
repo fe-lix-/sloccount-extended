@@ -102,6 +102,7 @@ EXECUTABLES= \
    get_sloc \
    get_sloc_details \
    haskell_count \
+   html_tmpl_count \
    lex_count \
    lisp_count \
    make_filelists \

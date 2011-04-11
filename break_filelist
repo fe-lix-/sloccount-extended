@@ -54,7 +54,6 @@ $noisy = 0;            # Set to 1 if you want noisy reports.
 
 # The following extensions are NOT code:
 %not_code_extensions = (
-   "html" => 1,
    "in" => 1,    # Debatable.
    "xpm" => 1,
    "po" => 1,
@@ -129,6 +128,9 @@ $noisy = 0;            # Set to 1 if you want noisy reports.
    "CHANGES" => 1,
    "Changes" => 1,
    ".cvsignore" => 1,
+   ".gitignore" => 1,
+   ".gitmodules" => 1,
+   ".coverage" => 1,
    "Root" => 1,       # CVS.
    "BUGS" => 1,
    "TODO" => 1,
@@ -208,6 +210,7 @@ $noisy = 0;            # Set to 1 if you want noisy reports.
   #new file types:
   "css" => "css",
   "xml" => "xml",
+  "html" => "html_tmpl",
   "js" => "js",
 );
 

@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+
+"""
+html_template_count - count physical lines of code in HTML files which may or
+ may not be templates.
+Usage: html_template_count [-f file] [list_of_files]
+ file: file with a list of files to count (if "-", read list from stdin)
+ list_of_files: list of files to count
+ -f file or list_of_files can be used, or both
+"""
+
+# NOTE: This plugin is not very efficient, since it reads whole source files
+# into memory and performs multiple regular expression substitutions on those
+# source files, instead of incrementally reading and parsing them. It works
+# fine for our needs, but keep this in mind.
+
+import re
+import sys
+
+COMMENT_PAIRS = [
+    # HTML comments
+    ('<!--', '-->'),
+    # Jinja/Django comments
+    ('{#', '#}'),
+    ('{%\s*comment\s*%}', '{%\s*endcomment\s*%}'),
+    # CSS or JS block comments
+    ('/\*', '\*/'),
+    # JS line comments
+    ('//', None)
+    ]
+
+COMMENT_PATTERNS = [
+    re.compile(r'%s.*?%s' % (start, end), re.M) if end else
+    re.compile(r'%s.*$' % start)
+    for start, end in COMMENT_PAIRS]
+
+TOTAL_SLOC = 0
+
+def count_file(path):
+    global TOTAL_SLOC
+    try:
+        f = open(path.strip())
+        src = f.read()
+    finally:
+        f.close()
+    for pattern in COMMENT_PATTERNS:
+        src = re.sub(pattern, '', src)
+    sloc = sum(1 for line in src.splitlines() if line.strip())
+    TOTAL_SLOC += sloc
+    print '%s %s' % (sloc, path.strip())
+
+def main(argv):
+    # Do we have "-f" (read list of files from second argument)?
+    if len(argv) > 1 and argv[0] == '-f':
+        # Yes, we have -f
+        if argv[1] == '-':
+            # The list of files is in STDIN
+            for path in sys.stdin:
+                count_file(path)
+        else:
+            # The list of files is in the file $ARGV[1]
+            try:
+                f = open(argv[1])
+                lines = f.readlines()
+            finally:
+                f.close()
+            map(count_file, lines)
+        argv = argv[2:]
+    # Process all (remaining) arguments as file names
+    for path in argv:
+        count_file(path)
+
+    print 'Total:'
+    print TOTAL_SLOC
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))
