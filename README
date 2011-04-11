@@ -49,3 +49,13 @@ More info on the status of SLOCCount in Debian should see
 http://packages.debian.org/cgi-bin/search_packages.pl?keywords=sloccount&searchon=names&subword=1&version=all&release=all
 
 
+sloccount-extended amendments
+=============================
+
+This fork of SLOCCount incorporates Liam Christopher's changes to add
+counters for js/css/xml files, from this repo:
+
+  https://github.com/liamchristopher/sloccount-extended
+
+In addition, a counter for Django/Jinja HTML-based templates was added by
+Will McCutchen.
